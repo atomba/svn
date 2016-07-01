@@ -1,0 +1,42 @@
+#!/bin/bash
+
+if [ "$1" = "commit" ] || [ "$1" = "ci" ]
+then
+
+files=""
+
+tmpfile=.svnfiles
+
+/usr/bin/svn status | grep -v module.mk | grep -v Makefile | grep "^M" | while read line
+do
+file=`echo $line | cut -f 2 -d " "`
+echo found modified file $file
+#files=$file" "$files
+
+echo $file >> $tmpfile
+done
+
+if [ -e "$tmpfile" ]
+then
+files=`cat $tmpfile`
+
+echo here are the files 
+echo $files
+
+rm -f $tmpfile
+
+if [ "$2" = "-m" ]
+then
+echo "checking in \.\.\."
+#/usr/bin/svn ci $files "$@"
+fi
+
+else
+
+echo "Nothing to do, there are no modifications"
+fi
+
+else
+/usr/bin/svn "$@"
+fi
+
