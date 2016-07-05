@@ -7,7 +7,7 @@ files=""
 
 tmpfile=.svnfiles
 
-/usr/bin/svn status | grep -v module.mk | grep -v Makefile | grep "^M" | while read line
+/usr/bin/svn status | grep -v module.mk | grep -v Makefile | grep "^[M|A]" | while read line
 do
 file=`echo $line | cut -f 2 -d " "`
 echo found modified file $file
@@ -27,8 +27,8 @@ rm -f $tmpfile
 
 if [ "$2" = "-m" ]
 then
-echo "checking in \.\.\."
-#/usr/bin/svn ci $files "$@"
+echo "checking in ..."
+/usr/bin/svn ci $files "$@"
 fi
 
 else
