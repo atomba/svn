@@ -6,8 +6,43 @@ then
 files=""
 
 tmpfile=.svnfiles
+tmpmodified=.modified
+tmpmodified_t=.modified_t
 
-/usr/bin/svn status | grep -v module.mk | grep -v Makefile | grep "^[M|A]" | while read line
+path=`readlink -f .`
+
+while [ "$path" != "/" ]
+do
+ignorefile=$path/.svnignore
+if [ -e "$ignorefile" ]
+then
+  break
+else
+  ignorefile=""
+fi
+
+path=`dirname $path`
+
+done
+
+/usr/bin/svn status | grep "^[M|A]" > $tmpmodified
+
+if ! [ -z "$ignorefile" ] 
+then
+  cat $tmpmodified | while read line
+  do
+    ### TODO with regex   
+    grep -v $line $tmpmodified > $tmpmodified_t 
+    cp $tmpmodified_t $tmpfile
+    cp $tmpmodified $tmpmodified_t
+    cp $tmpfile $tmpmodified
+  done   
+fi
+
+rm -f $tmpfile
+
+#/usr/bin/svn status | grep -v module.mk | grep -v Makefile | grep "^[M|A]" | while read line
+cat $tmpmodifed | while read line
 do
 file=`echo $line | cut -f 2 -d " "`
 echo found modified file $file
@@ -24,6 +59,8 @@ echo here are the files
 echo $files
 
 rm -f $tmpfile
+rm -f $tmpmodified
+rm -f $tmpmodified_t
 
 if [ "$2" = "-m" ]
 then
