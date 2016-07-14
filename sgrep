@@ -1,0 +1,34 @@
+#!/bin/bash
+
+sgrep() {
+  if [ "$1"x == "x" ]
+  then
+    echo "need to provide \"what\" to grep"
+    exit -1
+  fi
+  while read line ; do grep "$1" -n $line /dev/null; done
+}
+
+grepc() {
+  #find . -name "*.cpp" -o -name "*.h" -exec grep -n $1 /dev/null {} \;        
+  find . -name "*.cpp" -o -name "*.h" -o -name "*.hpp" | while read line ; do grep "$1" -n $line /dev/null; done
+}
+
+findjava() {
+  find . -name "*.java"
+}
+
+findcpp() {
+  find . -name "*.cpp" -o -name "*.h" -o -name "*.hpp"
+}
+
+grepj() {
+  findjava | sgrep "$1"
+}
+
+grepcpp() {
+  findcpp | sgrep "$1"
+}
+
+#find . -type f | sgrep "$1"
+

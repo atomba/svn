@@ -25,14 +25,15 @@ path=`dirname $path`
 
 done
 
-/usr/bin/svn status | grep "^[M|A]" > $tmpmodified
+/usr/bin/svn status | grep "^[M|A|D]" > $tmpmodified
 
 if ! [ -z "$ignorefile" ] 
 then
   cat $ignorefile | while read line
   do
     ### TODO with regex   
-    grep -v $line $tmpmodified | tee $tmpmodified_t 
+    #grep -v $line $tmpmodified | tee $tmpmodified_t 
+    grep -v $line $tmpmodified > $tmpmodified_t 
     #exit
     cp $tmpmodified_t $tmpfile
     cp $tmpmodified $tmpmodified_t
