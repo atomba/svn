@@ -1,5 +1,25 @@
 #!/bin/bash
 
+READLINK=readlink
+
+### find out the platform first
+platform='Unknown'
+unamestr=`uname`
+if [[ "$unamestr" == 'Linux' ]]; then
+   platform='linux'
+elif [[ "$unamestr" == 'FreeBSD' ]]; then
+   platform='freebsd'
+elif [[ "$unamestr" == 'Darwin' ]]; then
+   platform='macOS'
+   READLINK=greadlink
+fi
+
+if ! [ -e `which $READLINK` ]
+then
+   echo "Can't find readlink or greadlink program, please make sure to have it installed"
+   exit -1
+fi
+
 if [ "$1" = "commit" ] || [ "$1" = "ci" ]
 then
 
@@ -9,9 +29,9 @@ tmpfile=.svnfiles
 tmpmodified=.modified
 tmpmodified_t=.modified_t
 
-path=`readlink -f .`
+path=`$READLINK -f .`
 
-while [ "$path" != "/" ]
+while [ "$path" != "/" ] && [ "$path"x != "x" ]
 do
 ignorefile=$path/.svnignore
 if [ -e "$ignorefile" ]
