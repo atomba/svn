@@ -49,10 +49,11 @@ done
 
 if ! [ -z "$ignorefile" ] 
 then
-  cat $tmpmodified | while read line
+  cat $ignorefile | while read line
   do
     ### TODO with regex   
-    grep -v $line $tmpmodified > $tmpmodified_t 
+    grep -v $line $tmpmodified | tee $tmpmodified_t 
+    #exit
     cp $tmpmodified_t $tmpfile
     cp $tmpmodified $tmpmodified_t
     cp $tmpfile $tmpmodified
@@ -62,7 +63,7 @@ fi
 rm -f $tmpfile
 
 #/usr/bin/svn status | grep -v module.mk | grep -v Makefile | grep "^[M|A]" | while read line
-cat $tmpmodifed | while read line
+cat $tmpmodified | while read line
 do
 file=`echo $line | cut -f 2 -d " "`
 echo found modified file $file
@@ -78,9 +79,9 @@ files=`cat $tmpfile`
 echo here are the files 
 echo $files
 
-rm -f $tmpfile
-rm -f $tmpmodified
-rm -f $tmpmodified_t
+#rm -f $tmpfile
+#rm -f $tmpmodified
+#rm -f $tmpmodified_t
 
 if [ "$2" = "-m" ]
 then
