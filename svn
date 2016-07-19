@@ -87,7 +87,7 @@ rm -f $tmpmodified_t
 if [ "$2" = "-m" ]
 then
 echo "checking in ..."
-/usr/bin/svn ci $files "$@"
+/usr/bin/svn "$@" $files
 fi
 
 else
