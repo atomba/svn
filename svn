@@ -80,9 +80,9 @@ files=`cat $tmpfile`
 echo here are the files 
 echo $files
 
-#rm -f $tmpfile
-#rm -f $tmpmodified
-#rm -f $tmpmodified_t
+rm -f $tmpfile
+rm -f $tmpmodified
+rm -f $tmpmodified_t
 
 if [ "$2" = "-m" ]
 then

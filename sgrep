@@ -6,29 +6,37 @@ sgrep() {
     echo "need to provide \"what\" to grep"
     exit -1
   fi
-  while read line ; do grep "$1" -n $line /dev/null; done
+  while read line ; do grep -in "$1" "$line" /dev/null; done
 }
 
 grepc() {
   #find . -name "*.cpp" -o -name "*.h" -exec grep -n $1 /dev/null {} \;        
-  find . -name "*.cpp" -o -name "*.h" -o -name "*.hpp" | while read line ; do grep "$1" -n $line /dev/null; done
+  find . -type f -name "*.cpp" -o -name "*.h" -o -name "*.hpp" | while read line ; do grep "$1" -n "$line" /dev/null; done
 }
 
 findjava() {
-  find . -name "*.java"
+  find . -type f -name "*.java"
+}
+
+findjs() {
+  find . -type f -name "*.js"
 }
 
 findcpp() {
-  find . -name "*.cpp" -o -name "*.h" -o -name "*.hpp"
+  find . -type f -name "*.cpp" -o -name "*.h" -o -name "*.hpp" -o -name "*[m|M]akefile"
 }
 
 grepj() {
   findjava | sgrep "$1"
 }
 
+grepjs() {
+  findjs | sgrep "$1"
+}
+
 grepcpp() {
   findcpp | sgrep "$1"
 }
 
-#find . -type f | sgrep "$1"
+#find . . -type f sgrep "$1"
 
