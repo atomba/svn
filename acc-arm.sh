@@ -1,6 +1,6 @@
 export TOOLCHAIN_BIN=$ANDROID_TOOLCHAINS/arm/bin
 
-target_host=$TOOLCHAIN_BIN/arm-linux-android
+target_host=$TOOLCHAIN_BIN/arm-linux-androideabi
 export AR=$target_host-ar
 export AS=$target_host-clang
 # export CC=$target_host-clang
