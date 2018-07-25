@@ -1,4 +1,4 @@
-export TOOLCHAIN_BIN=$ANDROID_TOOLCHAINS/arm/bin
+export TOOLCHAIN_BIN=$ANDROID_TOOLCHAINS/arm64/bin
 
 target_host=$TOOLCHAIN_BIN/aarch64-linux-android
 export AR=$target_host-ar
