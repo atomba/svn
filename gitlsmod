@@ -1,0 +1,3 @@
+#!/bin/bash
+
+cat .gitmodules | grep "path =" | cut -f 2 -d "="
