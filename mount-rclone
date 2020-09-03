@@ -1,0 +1,3 @@
+#!/bin/bash
+
+rclone mount gdrive: /home/dev/cloud/drive

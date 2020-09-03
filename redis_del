@@ -1,0 +1,4 @@
+#!/bin/bash
+
+redis-cli --scan --pattern "$1" | awk '{print $1}' | sed "s/^/'/;s/$/'/" | xargs redis-cli del
+
