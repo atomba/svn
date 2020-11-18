@@ -19,14 +19,6 @@ fi
 
 bucket=$1
 
-if [[ "x$AWS_REGION" == "x" ]]
-then
-    region="ap-southeast-2"
-    echo "AWS region is not set, it can to be set by using: export AWS_REGION=xxxxxx"
-fi
-
-echo "Using region: $AWS_REGION"
-
 rm -f /tmp/s3policy.json
 cat << EOF >> /tmp/s3policy.json
 {
@@ -56,28 +48,71 @@ cat << EOF >> /tmp/s3website.json
 }
 EOF
 
-# cat list.txt | while read line; 
-# do 
-    echo $bucket; 
-    if [ $command -eq 0 ] || [ $command -eq -1 ] 
-    then
-        aws s3api create-bucket --bucket $bucket --region $AWS_REGION --create-bucket-configuration LocationConstraint=$AWS_REGION
-    fi
+#
+#
+# Can add routing rules
 
-    if [ $command -eq 1 ] || [ $command -eq -1 ] 
-    then
-        aws s3api put-bucket-acl --bucket $bucket --acl public-read 
-    fi
+# ,
+#   "RoutingRules": [
+#     {
+#       "Condition": {
+#         "HttpErrorCodeReturnedEquals": "string",
+#         "KeyPrefixEquals": "string"
+#       },
+#       "Redirect": {
+#         "HostName": "string",
+#         "HttpRedirectCode": "string",
+#         "Protocol": "http"|"https",
+#         "ReplaceKeyPrefixWith": "string",
+#         "ReplaceKeyWith": "string"
+#       }
+#     }
+#   ]
+#
 
-    if [ $command -eq 2 ] || [ $command -eq -1 ] 
-    then
-        aws s3api put-bucket-policy --bucket $bucket --policy file:///tmp/s3policy.json
-    fi
+rm -f /tmp/s3website-redict.json
+cat << EOF >> /tmp/s3website-redict.json
+{
+  "RedirectAllRequestsTo": {
+    "HostName": "www.$bucket",
+    "Protocol": "https"
+  }
+}
+EOF
 
-    if [ $command -eq 3 ] || [ $command -eq -1 ]
-    then
-        aws s3 website s3://$bucket/  --index-document index.html
-    fi
+if [ "x$AWS_REGION" == "x" ]
+then
+    # sydnet: region="ap-southeast-2";
+    echo "AWS region needs to be set, use: export AWS_REGION=xxxxxx"
+    exit
+else
+    region=$AWS_REGION
+fi
 
+echo $bucket; 
+if [ $command -eq 0 ] || [ $command -eq -1 ] || [ $command -eq -2 ]
+then
+aws s3api create-bucket --bucket $bucket --region $AWS_REGION --create-bucket-configuration LocationConstraint=$region
+fi
 
-# done
+if [ $command -eq 1 ] || [ $command -eq -1 ] || [ $command -eq -2 ]
+then
+aws s3api put-bucket-acl --bucket $bucket --acl public-read  --region $AWS_REGION
+fi
+
+if [ $command -eq 2 ] || [ $command -eq -1 ] || [ $command -eq -2 ]
+then
+aws s3api put-bucket-policy --bucket $bucket --policy file:///tmp/s3policy.json  --region $AWS_REGION
+fi
+
+if [ $command -eq 3 ] || [ $command -eq -1 ]
+then
+#aws s3 website s3://$bucket/  --index-document index.html
+aws s3api put-bucket-website --bucket $bucket  --website-configuration file:///tmp/s3website.json  --region $AWS_REGION
+fi
+
+if [ $command -eq 4 ] || [ $command -eq -2 ]
+then
+aws s3api put-bucket-website --bucket $bucket  --website-configuration file:///tmp/s3website-redict.json  --region $AWS_REGION
+fi
+
